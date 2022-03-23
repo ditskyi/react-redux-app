@@ -1,4 +1,4 @@
-import { CREATE_POST, FETCH_POSTS, HIDE_ALERT, HIDE_LOADER, SHOW_ALERT, SHOW_LOADER, CREATE_USER, IS_LOGIN, ISN_LOGIN, DELETE_POST, HIDE_MIDDLEWARE_ALERT } from "./actionTypes";
+import { CREATE_POST, FETCH_POSTS, HIDE_ALERT, HIDE_LOADER, SHOW_ALERT, SHOW_LOADER, CREATE_USER, IS_LOGIN, ISN_LOGIN, DELETE_POST } from "./actionTypes";
 import { auth, database } from '../../FirebaseConfig'
 
 export function createPost(post) {
@@ -12,70 +12,6 @@ export function deletePost(post) {
     return {
         type: DELETE_POST,
         payload: post
-    }
-}
-
-export function deleteAsyncPost(post) {
-    return async dispatch => {
-        try {
-            await database.ref('Posts').child(post.id).remove()
-            dispatch(deletePost(post))
-        } catch(error) {
-            dispatch(showAlert(newAlert(error.message)))
-            dispatch(hideAlert(newAlert(error.message)))
-        }
-    }
-}
-
-export function createAsyncPost(post) {
-    return async dispatch => {
-        try {
-            dispatch(showLoader())
-            const firebasePost = await database.ref('Posts').push(post);
-            const key = (await firebasePost.get()).key
-
-            const newPost = {
-                ...post,
-                id: key
-            }
-            dispatch(createPost(newPost))
-        } catch (error) {
-            dispatch(showAlert(newAlert(error.message)))
-            dispatch(hideAlert(newAlert(error.message)))
-        }
-        finally {
-            dispatch(hideLoader())
-        }
-    }
-}
-
-
-export function fetchPosts(alert, userId) {
-    return async dispatch => {
-        try {
-            dispatch(showLoader())
-            await database.ref('Posts').get()
-            .then(response => response.val())
-            .then(response => response ? Object.keys(response).map(key => ({
-                    ...response[key],
-                    id: key
-                })) : []
-            )
-            .then(response => response.filter(post => {
-                return (post.uid === userId);
-            })     
-            )
-            .then(post => dispatch({
-                type: FETCH_POSTS,
-                payload: post
-            }))
-        } catch (error) {
-            dispatch(showAlert(alert))
-            dispatch(hideAlert(alert))
-        }
-        finally {
-            dispatch(hideLoader())
-        }
     }
 }
 
@@ -98,20 +34,10 @@ export function showAlert (alert) {
     }
 }
 
-export function hideMiddlewareAlert (alert) {
-    return {
-        type: HIDE_MIDDLEWARE_ALERT,
-        payload: alert,
-    }
-}
-
-export function hideAlert (alert) {
+export function hideAlert (id) {
     return {
         type: HIDE_ALERT,
-        payload: alert,
-        meta: {
-            delayMs: 1000
-        }
+        payload: id,
     }
 }
 
@@ -149,7 +75,6 @@ export function signInUser(email, password) {
             dispatch(addUser(currentUser))
         } catch (error) {
             dispatch(showAlert(newAlert(error.message)))
-            dispatch(hideAlert(newAlert(error.message)))
         }
     }
 }
@@ -161,7 +86,66 @@ export function signUpUser(email, password) {
             dispatch(addUser(newUser))
         } catch (error) {
             dispatch(showAlert(newAlert(error.message)))
-            dispatch(hideAlert(newAlert(error.message)))
+        }
+    }
+}
+
+export function deleteAsyncPost(post) {
+    return async dispatch => {
+        try {
+            await database.ref('Posts').child(post.id).remove()
+            dispatch(deletePost(post))
+        } catch(error) {
+            dispatch(showAlert(newAlert(error.message)))
+        }
+    }
+}
+
+export function createAsyncPost(post) {
+    return async dispatch => {
+        try {
+            dispatch(showLoader())
+            const firebasePost = await database.ref('Posts').push(post);
+            const key = (await firebasePost.get()).key
+
+            const newPost = {
+                ...post,
+                id: key
+            }
+            dispatch(createPost(newPost))
+        } catch (error) {
+            dispatch(showAlert(newAlert(error.message)))
+        }
+        finally {
+            dispatch(hideLoader())
+        }
+    }
+}
+
+export function fetchPosts(userId) {
+    return async dispatch => {
+        try {
+            dispatch(showLoader())
+            await database.ref('Posts').get()
+            .then(response => response.val())
+            .then(response => response ? Object.keys(response).map(key => ({
+                    ...response[key],
+                    id: key
+                })) : []
+            )
+            .then(response => response.filter(post => {
+                return (post.uid === userId);
+            })     
+            )
+            .then(post => dispatch({
+                type: FETCH_POSTS,
+                payload: post
+            }))
+        } catch (error) {
+            dispatch(showAlert(newAlert(error.message)))
+        }
+        finally {
+            dispatch(hideLoader())
         }
     }
 }

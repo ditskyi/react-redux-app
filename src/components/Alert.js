@@ -1,11 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { useDispatch } from 'react-redux'
-import { hideMiddlewareAlert } from './redux/actions';
+import { hideAlert } from './redux/actions';
 
 const Alert = ({alert}) => {
     const dispatch = useDispatch();
-
     return (
         <div>
             <div className="alert alert-danger alert-dismissible" role="alert">
@@ -15,7 +14,7 @@ const Alert = ({alert}) => {
                 className="btn-close" 
                 data-bs-dismiss="alert" 
                 aria-label="Close"
-                onClick={() => dispatch(hideMiddlewareAlert(alert))}
+                onClick={() => dispatch(hideAlert(alert.id))}
                 ></button>
             </div>
         </div>

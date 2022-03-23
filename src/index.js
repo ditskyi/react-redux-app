@@ -4,16 +4,16 @@ import { Provider } from 'react-redux';
 import { compose, createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import App from './App';
-import { hideAlertMiddleware } from './components/redux/middleware';
+import { AlertMiddleware } from './components/redux/middleware';
 import { rootReducer } from './components/redux/rootReducer';
 
 const store = createStore(rootReducer, compose(
   applyMiddleware(
-    thunk, hideAlertMiddleware
+    thunk, AlertMiddleware
   ),
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 ));
-
+window.store = store
 ReactDOM.render(
   <Provider store={store}>
     <App />

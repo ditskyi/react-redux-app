@@ -17,9 +17,7 @@ export const appReducer = (state = initialState, action) => {
         case SHOW_ALERT:
             return {...state, alerts: state.alerts.concat([action.payload])}
         case HIDE_ALERT:
-            return {...state, alerts: state.alerts.filter(alert => action.payload !== alert)}
-        case HIDE_MIDDLEWARE_ALERT:
-            return {...state, alerts: state.alerts.filter(alert => action.payload !== alert)}
+            return {...state, alerts: state.alerts.filter(alert => action.payload !== alert.id)}
         
         case CREATE_USER: 
             return {...state, user: action.payload}

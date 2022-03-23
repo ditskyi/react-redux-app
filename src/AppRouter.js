@@ -4,6 +4,7 @@ import AuthForm from './components/Auth/AuthForm'
 import PostList from './components/PostList'
 import PrivateRoute from './components/CustomRoute';
 import LoginForm from './components/Auth/LoginForm';
+import WizardForm from './components/WizardForm/WizardForm';
 
 export default function AppRouter() {
 
@@ -15,6 +16,7 @@ export default function AppRouter() {
           <PostList />
         </PrivateRoute>
       }/>
+      <Route path="/wizard_form" element={<WizardForm />} />
     </Routes>
   )
 }

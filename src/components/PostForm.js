@@ -17,7 +17,7 @@ function PostForm(props) {
     }
 
     useEffect(() => {
-        if(props.user) return props.fetchPosts(newAlert('Ups something went wrong!'), props.user.user.uid)
+        if(props.user) return props.fetchPosts(props.user.user.uid)
     }, [props.user])
 
     if(props.loading) {
@@ -30,19 +30,18 @@ function PostForm(props) {
         event.preventDefault();
 
         if(!title.trim()) {
-           props.showAlert(newAlert('Название поста не может быть пустым'))
-           console.log('props.alerts', props.alerts)
-           return props.hideAlert(newAlert('Название поста не может быть пустым'))
-        }
-
-        const newPost = {
+            return props.showAlert(newAlert('Название поста не может быть пустым'))
+        } else {
+            const newPost = {
             title,
             uid: props.user.user._delegate.uid 
         }
     
         props.createAsyncPost(newPost);
         setTitle('');
-    }
+        }
+       
+    } 
 
     // const changeInputHandler = event => {
     //     setTitle(prev => ({...prev, ...{

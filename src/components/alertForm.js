@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import Alert from './Alert'
 
 function AlertForm ({alerts}) {
-
     if(!alerts.length) return null;
     else
        return alerts.map(alert => <Alert alert={alert} key={alert.id} />)
